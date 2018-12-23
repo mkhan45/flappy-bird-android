@@ -7,8 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class gameFragment extends Fragment{
+
+    TextView score;
 
     public gameFragment(){
 
@@ -18,6 +23,9 @@ public class gameFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.game_layout, container, false);
+        score = rootView.findViewById(R.id.score);
         return rootView;
     }
+
+    public
 }

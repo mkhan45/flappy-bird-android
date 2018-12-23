@@ -45,7 +45,7 @@ public class Bird {
             this.y = y;
         }
 
-        public boolean isStatus () {
+        public boolean isAlive () {
             return status;
         }
 
