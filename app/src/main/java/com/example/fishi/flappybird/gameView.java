@@ -1,5 +1,6 @@
 package com.example.fishi.flappybird;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,8 +34,10 @@ public class gameView extends SurfaceView {
     private pipePair pipes;
     private Bitmap bottomPipe;
     private Bitmap topPipe;
+    private int score = 0;
+    private Paint textPaint;
 
-    public gameView(Context context, AttributeSet attributes) {
+    public gameView(final Context context, AttributeSet attributes) {
         super(context, attributes);
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -46,6 +50,12 @@ public class gameView extends SurfaceView {
         topPipe = Bitmap.createBitmap(bottomPipe, 0, 0, bottomPipe.getWidth(), bottomPipe.getHeight(), transform, true);
 
         bitmapPaint = new Paint(Paint.DITHER_FLAG);
+        textPaint = new Paint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setTextSize(200);
+
+
 
        holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
@@ -68,16 +78,20 @@ public class gameView extends SurfaceView {
         });
 
 
+
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 Thread updateThread = new Thread(update);
-                updateThread.run();
                 try {
+                    if (bird.getY() <= getHeight() + 10)
+                        updateThread.start();
                 }catch (Exception e){}
                 millis++;
+
+
             }
-        }, 0, 1);
+        }, 0, 16);
 
 
     }
@@ -97,7 +111,7 @@ public class gameView extends SurfaceView {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (bird.isAlive())
-                    dy = -30;
+                    dy = -15;
                 break;
         }
         postInvalidate();
@@ -119,27 +133,36 @@ public class gameView extends SurfaceView {
         @Override
         public void run() {
             try {
-                if(millis % 100 == 0 && millis != 0)
+                if(millis % 125 == 0 && millis != 0) {
                     pipes = new pipePair(getHeight(), getWidth());
-                if(millis >= 100)
-                   dy += 2;
+                    if(bird.isAlive()) {
+                        score++;
+                    }
+                }
+                if(millis >= 125 && millis % 2 == 0)
+                   dy += 1;
                 bird.update(dy);
                 pipes.moveX();
                 pipes.moveX();
 
+
                 Canvas canvas = holder.lockCanvas();
+                canvas.drawPaint(textPaint);
                 canvas.drawColor(Color.WHITE);
                 canvas.drawBitmap(bottomPipe, pipes.getX(), pipes.getBottomY(), bitmapPaint);
                 canvas.drawBitmap(topPipe, pipes.getX(), pipes.getTopY(), bitmapPaint);
                 canvas.drawBitmap(sprite, bird.getX(), bird.getY(), bitmapPaint);
+                canvas.drawText("Score: " + score, 200, 200, textPaint);
+                Log.i("score", score + "");
                 holder.unlockCanvasAndPost(canvas);
-
                 int birdNoseX = (int) Math.floor(bird.getX() + sprite.getWidth()/2);
-                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2) && (bird.getY() - sprite.getHeight()/2 > pipes.getTopY());
-                if (pipes.getX() - birdNoseX < 50 && !inRange)
+                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/5) && (bird.getY() - sprite.getHeight()/5 > pipes.getTopY() + topPipe.getHeight()/1.5);
+                if (pipes.getX() - birdNoseX < 30 && !inRange)
                     bird.setStatus(false);
+
             }catch (Exception e){}
         }
     };
+
 
 }

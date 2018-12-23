@@ -23,9 +23,7 @@ public class gameFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.game_layout, container, false);
-        score = rootView.findViewById(R.id.score);
         return rootView;
     }
 
-    public
 }
