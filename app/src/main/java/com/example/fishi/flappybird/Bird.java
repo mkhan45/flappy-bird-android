@@ -6,55 +6,60 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Bird {
     private int x, y;
     private boolean status; //dead or alive
     private double rotation;
+    int millis = 0;
 
-    public Bird(){
-        x = 50;
-        y = 500;
-        status = true;
-        rotation = 0;
-    }
 
-    public void jump(){
-        y += 20;
-    }
+    public Bird() {
+            x = 50;
+            y = 500;
+            status = true;
+            rotation = 0;
+        }
 
-    public void update(){
-        y -= 1;
-    }
+        public void jump () {
+            y -= 100;
+        }
 
-    public int getX() {
-        return x;
-    }
+        public void update (int t) {
+            y += t;
+        }
 
-    public void setX(int x) {
-        this.x = x;
-    }
+        public int getX () {
+            return x;
+        }
 
-    public int getY() {
-        return y;
-    }
+        public void setX ( int x){
+            this.x = x;
+        }
 
-    public void setY(int y) {
-        this.y = y;
-    }
+        public int getY () {
+            return y;
+        }
 
-    public boolean isStatus() {
-        return status;
-    }
+        public void setY ( int y){
+            this.y = y;
+        }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+        public boolean isStatus () {
+            return status;
+        }
 
-    public double getRotation() {
-        return rotation;
-    }
+        public void setStatus ( boolean status){
+            this.status = status;
+        }
 
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
+        public double getRotation () {
+            return rotation;
+        }
+
+        public void setRotation ( double rotation){
+            this.rotation = rotation;
+        }
     }
-}
