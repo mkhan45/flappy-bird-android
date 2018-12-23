@@ -23,12 +23,10 @@ public class Bird {
             rotation = 0;
         }
 
-        public void jump () {
-            y -= 100;
-        }
 
-        public void update (int t) {
-            y += t;
+        //basically the y velocity decreases by a bit every millisecond but clicking increases it
+        public void update (int dy) {
+            y += dy;
         }
 
         public int getX () {
