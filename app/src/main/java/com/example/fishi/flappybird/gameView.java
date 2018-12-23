@@ -34,7 +34,7 @@ public class gameView extends SurfaceView {
     private pipePair pipes;
     private Bitmap bottomPipe;
     private Bitmap topPipe;
-    private int score = 0;
+    private int score = -1;
     private Paint textPaint;
 
     public gameView(final Context context, AttributeSet attributes) {
