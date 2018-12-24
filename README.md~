@@ -8,6 +8,7 @@ I made this at the start of winter break because I wanted to see how much I coul
 
 Rotate bird (probably use a table instead of rotating each frame because matrix calculations are expensive I think)
 
+Make pipes fill screen (just make image longer?)
 
 Draw own sprites (or make daniel do it)
 

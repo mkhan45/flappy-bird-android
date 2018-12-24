@@ -37,7 +37,8 @@ public class gameView extends SurfaceView {
     private Bitmap topPipe;
     private int score = -1;
     private Paint textPaint;
-    boolean spriteScaled = false;
+    private boolean spriteScaled = false;
+    private boolean inRange;
 
     public gameView(final Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -163,7 +164,7 @@ public class gameView extends SurfaceView {
                 holder.unlockCanvasAndPost(canvas);
 
 
-                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2.8) && (bird.getY() + sprite.getHeight()/2 > pipes.getTopY() + topPipe.getHeight());
+                inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2.8) && (bird.getY() + sprite.getHeight()/2 > pipes.getTopY() + topPipe.getHeight());
                 if (pipes.getX() - bird.getX() < sprite.getWidth()/2 && !inRange)
                     bird.setStatus(false);
 
