@@ -84,6 +84,13 @@ public class gameView extends SurfaceView {
             public void run() {
                 Thread updateThread = new Thread(update);
                 try {
+                    if(millis % 125 == 0 && millis >= 125) {
+                        pipes = new pipePair(getHeight(), getWidth());
+                        if(bird.isAlive()) {
+                            score++;
+                        }
+                    }
+
                     if (bird.getY() <= getHeight() + 10)
                         updateThread.start();
                 }catch (Exception e){}
@@ -133,12 +140,6 @@ public class gameView extends SurfaceView {
         @Override
         public void run() {
             try {
-                if(millis % 125 == 0 && millis != 0) {
-                    pipes = new pipePair(getHeight(), getWidth());
-                    if(bird.isAlive()) {
-                        score++;
-                    }
-                }
                 if(millis >= 125 && millis % 2 == 0)
                    dy += 1;
                 bird.update(dy);
@@ -153,10 +154,11 @@ public class gameView extends SurfaceView {
                 canvas.drawBitmap(topPipe, pipes.getX(), pipes.getTopY(), bitmapPaint);
                 canvas.drawBitmap(sprite, bird.getX(), bird.getY(), bitmapPaint);
                 canvas.drawText("Score: " + score, 200, 200, textPaint);
-                Log.i("score", score + "");
                 holder.unlockCanvasAndPost(canvas);
+
+
                 int birdNoseX = (int) Math.floor(bird.getX() + sprite.getWidth()/2);
-                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/5) && (bird.getY() - sprite.getHeight()/5 > pipes.getTopY() + topPipe.getHeight()/1.5);
+                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2) && (bird.getY() > pipes.getTopY() + topPipe.getHeight());
                 if (pipes.getX() - birdNoseX < 30 && !inRange)
                     bird.setStatus(false);
 

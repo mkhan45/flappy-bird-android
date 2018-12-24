@@ -7,7 +7,7 @@ public class pipePair {
     private int x;
 
     public pipePair(int screenHeight, int screenWidth){
-        dist = (int) Math.floor(screenHeight/1.5);
+        dist = (int) 425 * 4 + 250; //300 is pipe height
         bottomY = (int) Math.floor(Math.random() * (screenHeight/2) + .25 * screenHeight);
         topY = bottomY - dist;
         x = screenWidth;
