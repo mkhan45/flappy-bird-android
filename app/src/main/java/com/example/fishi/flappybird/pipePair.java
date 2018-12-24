@@ -1,5 +1,7 @@
 package com.example.fishi.flappybird;
 
+import android.util.Log;
+
 public class pipePair {
 
     private int dist;
@@ -7,8 +9,8 @@ public class pipePair {
     private int x;
 
     public pipePair(int screenHeight, int screenWidth){
-        dist = (int) 425 * 4 + 250; //300 is pipe height
-        bottomY = (int) Math.floor(Math.random() * (screenHeight/2) + .25 * screenHeight);
+        dist = (int) (screenHeight/1.15);
+        bottomY = (int) Math.floor(Math.random() * (screenHeight/2) + .3 * screenHeight);
         topY = bottomY - dist;
         x = screenWidth;
     }

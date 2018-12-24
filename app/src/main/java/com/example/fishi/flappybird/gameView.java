@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class gameView extends SurfaceView {
     private Bitmap topPipe;
     private int score = -1;
     private Paint textPaint;
+    boolean spriteScaled = false;
 
     public gameView(final Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -84,6 +86,10 @@ public class gameView extends SurfaceView {
             public void run() {
                 Thread updateThread = new Thread(update);
                 try {
+                    if (!spriteScaled){
+                        sprite = Bitmap.createScaledBitmap(sprite,(int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
+                        spriteScaled = true;
+                    }
                     if(millis % 125 == 0 && millis >= 125) {
                         pipes = new pipePair(getHeight(), getWidth());
                         if(bird.isAlive()) {
@@ -157,9 +163,8 @@ public class gameView extends SurfaceView {
                 holder.unlockCanvasAndPost(canvas);
 
 
-                int birdNoseX = (int) Math.floor(bird.getX() + sprite.getWidth()/2);
-                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2) && (bird.getY() > pipes.getTopY() + topPipe.getHeight());
-                if (pipes.getX() - birdNoseX < 30 && !inRange)
+                boolean inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2.8) && (bird.getY() + sprite.getHeight()/2 > pipes.getTopY() + topPipe.getHeight());
+                if (pipes.getX() - bird.getX() < sprite.getWidth()/2 && !inRange)
                     bird.setStatus(false);
 
             }catch (Exception e){}
