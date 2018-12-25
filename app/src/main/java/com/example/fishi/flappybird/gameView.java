@@ -37,6 +37,9 @@ public class gameView extends SurfaceView {
     private Bitmap topPipe;
     private int score = -1;
     private Paint textPaint;
+    private RectF spriteRect;
+    private RectF topPipeRect = new RectF();
+    private RectF bottomPipeRect = new RectF();
     private boolean spriteScaled = false;
     private boolean inRange;
 
@@ -82,33 +85,38 @@ public class gameView extends SurfaceView {
 
 
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Thread updateThread = new Thread(update);
-                try {
-                    if (!spriteScaled){
-                        sprite = Bitmap.createScaledBitmap(sprite,(int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
-                        spriteScaled = true;
+                Thread updateThread = new Thread(){
+                    public void run(){
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (!spriteScaled){
+                                        sprite = Bitmap.createScaledBitmap(sprite,(int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
+                                        spriteScaled = true;
+                                    }
+                                    if(millis % 80 == 0 && millis >= 100) {
+                                        if (pipes == null)
+                                            pipes = new pipePair(getHeight(), getWidth());
+                                        else
+                                            pipes.reset();
+                                        if(bird.isAlive()) {
+                                            score++;
+                                        }
+                                    }
+
+                                    update.run();
+                                }catch (Exception e){}
+                                millis++;
+                            }
+                        }, 0, 16);
                     }
-                    if(millis % 125 == 0 && millis >= 125) {
-                        pipes = new pipePair(getHeight(), getWidth());
-                        if(bird.isAlive()) {
-                            score++;
-                        }
-                    }
+                };
 
-                    if (bird.getY() <= getHeight() + 10)
-                        updateThread.start();
-                }catch (Exception e){}
-                millis++;
-
-
+                updateThread.start();
             }
-        }, 0, 16);
 
 
-    }
 
 
 //    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -125,7 +133,7 @@ public class gameView extends SurfaceView {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (bird.isAlive())
-                    dy = -15;
+                    dy = -25;
                 break;
         }
         postInvalidate();
@@ -147,8 +155,8 @@ public class gameView extends SurfaceView {
         @Override
         public void run() {
             try {
-                if(millis >= 125 && millis % 2 == 0)
-                   dy += 1;
+                if(millis >= 165 && millis % 2 == 0)
+                   dy += 3;
                 bird.update(dy);
                 pipes.moveX();
                 pipes.moveX();
@@ -164,9 +172,16 @@ public class gameView extends SurfaceView {
                 holder.unlockCanvasAndPost(canvas);
 
 
-                inRange = (pipes.getBottomY() > bird.getY() + sprite.getHeight()/2.8) && (bird.getY() + sprite.getHeight()/2 > pipes.getTopY() + topPipe.getHeight());
-                if (pipes.getX() - bird.getX() < sprite.getWidth()/2 && !inRange)
+
+                spriteRect = new RectF(bird.getX(), bird.getY(), bird.getX() + sprite.getWidth(), bird.getY() + sprite.getHeight());
+                topPipeRect = new RectF(pipes.getX(), pipes.getTopY(), pipes.getX() + topPipe.getWidth(), pipes.getTopY() + topPipe.getHeight());
+                bottomPipeRect = new RectF(pipes.getX(), pipes.getBottomY(), pipes.getX() + bottomPipe.getWidth(), getHeight());
+
+
+                if (spriteRect.intersect(topPipeRect) || spriteRect.intersect(bottomPipeRect))
                     bird.setStatus(false);
+
+
 
             }catch (Exception e){}
         }
