@@ -8,6 +8,7 @@ public class pipePair {
     private int topY, bottomY;
     private int x;
     private int height, width;
+    private double dx;
 
     public pipePair(int screenHeight, int screenWidth){
         dist = (int) (screenHeight/1.15);
@@ -15,13 +16,14 @@ public class pipePair {
         topY = bottomY - dist;
 
         x = screenWidth;
+        dx = .0125 * screenWidth;
         height = screenHeight;
         width = screenWidth;
     }
 
 
     public void moveX(){
-        x -= 12;
+        x -= dx;
     }
 
     public int getX(){
