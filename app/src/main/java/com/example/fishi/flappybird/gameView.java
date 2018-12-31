@@ -93,6 +93,8 @@ public class gameView extends SurfaceView {
                                 try {
                                     if (!spriteScaled){
                                         sprite = Bitmap.createScaledBitmap(sprite,(int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
+                                        bottomPipe = Bitmap.createScaledBitmap(bottomPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
+                                        topPipe = Bitmap.createScaledBitmap(topPipe, (int)(Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
                                         spriteScaled = true;
                                     }
                                     if(millis % 80 == 0 && millis >= 100) {
