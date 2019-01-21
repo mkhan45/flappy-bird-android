@@ -42,6 +42,7 @@ public class gameView extends SurfaceView {
     private RectF bottomPipeRect = new RectF();
     private boolean spriteScaled = false;
     private boolean paused;
+    private boolean ai = false;
 
     public gameView(final Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -62,12 +63,12 @@ public class gameView extends SurfaceView {
         textPaint.setTextSize(200);
 
 
-
-       holder = getHolder();
+        holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) { }
+            public void surfaceDestroyed(SurfaceHolder holder) {
+            }
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -79,49 +80,47 @@ public class gameView extends SurfaceView {
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { }
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
 
         });
 
 
-
-                Thread updateThread = new Thread(){
-                    public void run(){
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (!paused) {
-                                    try {
-                                        if (!spriteScaled) {
-                                            sprite = Bitmap.createScaledBitmap(sprite, (int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
-                                            bottomPipe = Bitmap.createScaledBitmap(bottomPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
-                                            topPipe = Bitmap.createScaledBitmap(topPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
-                                            spriteScaled = true;
-                                        }
-                                        if (millis % 120 == 0 && millis >= 80) {
-                                            if (pipes == null)
-                                                pipes = new pipePair(getHeight(), getWidth());
-                                            else
-                                                pipes.reset();
-                                            if (bird.isAlive()) {
-                                                score++;
-                                            }
-                                        }
-
-                                        update.run();
-                                    } catch (Exception e) {
-                                    }
-                                    millis++;
+        Thread updateThread = new Thread() {
+            public void run() {
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (!paused) {
+                            try {
+                                if (!spriteScaled) {
+                                    sprite = Bitmap.createScaledBitmap(sprite, (int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
+                                    bottomPipe = Bitmap.createScaledBitmap(bottomPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
+                                    topPipe = Bitmap.createScaledBitmap(topPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
+                                    spriteScaled = true;
                                 }
+                                if (millis % 120 == 0 && millis >= 80) {
+                                    if (pipes == null)
+                                        pipes = new pipePair(getHeight(), getWidth());
+                                    else
+                                        pipes.reset();
+                                    if (bird.isAlive()) {
+                                        score++;
+                                    }
+                                }
+
+                                update.run();
+                            } catch (Exception e) {
                             }
-                        }, 0, 16);
+                            millis++;
+                        }
                     }
-                };
-
-                updateThread.start();
+                }, 0, 16);
             }
+        };
 
-
+        updateThread.start();
+    }
 
 
 //    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -154,14 +153,12 @@ public class gameView extends SurfaceView {
     }
 
 
-
-
     Runnable update = new Runnable() { //draws and updates bird and pipes
         @Override
         public void run() {
             try {
-                if(millis >= 130 && millis % 2 == 0)
-                   dy += 3;
+                if (millis >= 130 && millis % 2 == 0)
+                    dy += 3;
                 bird.update(dy);
                 pipes.moveX();
 
@@ -176,23 +173,44 @@ public class gameView extends SurfaceView {
                 holder.unlockCanvasAndPost(canvas);
 
 
-
                 spriteRect = new RectF(bird.getX(), bird.getY(), bird.getX() + sprite.getWidth(), bird.getY() + sprite.getHeight());
                 topPipeRect = new RectF(pipes.getX(), pipes.getTopY(), pipes.getX() + topPipe.getWidth(), pipes.getTopY() + topPipe.getHeight());
                 bottomPipeRect = new RectF(pipes.getX(), pipes.getBottomY(), pipes.getX() + bottomPipe.getWidth(), getHeight());
 
+                if (ai) {
+                    int xDist = (int) bottomPipeRect.left - bird.getX();
+                    int bottomYDist = (int) bottomPipeRect.top - bird.getY();
+                    int topYDist = (int) (bird.getY() - topPipeRect.bottom);
 
-                if (spriteRect.intersect(topPipeRect) || spriteRect.intersect(bottomPipeRect))
+                    if (getHeight() - bird.getY() < 450 && dy > -23) {
+                        dy -= 25;
+                        Log.i("Jumping", "too low");
+                    }
+                    else if (bottomYDist <= 175 && topYDist > 0 && dy >= 0) {
+                        dy -= 25;
+                        Log.i("Jumping", "avoid pipe");
+                    }
+                }
+
+
+                if (spriteRect.intersect(topPipeRect) || spriteRect.intersect(bottomPipeRect)) {
                     bird.setStatus(false);
+                    ai = false;
+                }
 
 
 
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
         }
     };
 
-    public void togglePause(){
+    public void togglePause() {
         paused = !paused;
+    }
+
+    public void ai() {
+        ai = true;
     }
 
 

@@ -16,6 +16,7 @@ import org.w3c.dom.Text;
 public class gameFragment extends Fragment{
 
     View rootView;
+    Boolean ai = false;
 
     public gameFragment(){
 
@@ -27,6 +28,10 @@ public class gameFragment extends Fragment{
         rootView = inflater.inflate(R.layout.game_layout, container, false);
         FloatingActionButton pauseButton = rootView.findViewById(R.id.pauseButton);
         pauseButton.setOnClickListener(pause);
+
+        if (ai){
+            ((gameView) rootView.findViewById(R.id.gameView)).ai();
+        }
         return rootView;
     }
 
@@ -38,5 +43,9 @@ public class gameFragment extends Fragment{
            game.togglePause();
         }
     };
+
+    public void ai(){
+        ai = true;
+    }
 
 }
