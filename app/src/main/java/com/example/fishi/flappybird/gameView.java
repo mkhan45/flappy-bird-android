@@ -179,21 +179,21 @@ public class gameView extends SurfaceView {
 
                 if (ai) {
                     int xDist = (int) bottomPipeRect.left - bird.getX();
-                    int bottomYDist = (int) bottomPipeRect.top - bird.getY();
+                    int bottomYDist = (int) bottomPipeRect.top - bird.getY() - sprite.getHeight();
                     int topYDist = (int) (bird.getY() - topPipeRect.bottom);
 
                     if (getHeight() - bird.getY() < 450 && dy > -23) {
                         dy -= 25;
                         Log.i("Jumping", "too low");
                     }
-                    else if (bottomYDist <= 175 && topYDist > 0 && dy >= 0) {
+                    else if (bottomYDist <= 50 && topYDist > 0 && dy >= 0) {
                         dy -= 25;
                         Log.i("Jumping", "avoid pipe");
                     }
                 }
 
 
-                if (spriteRect.intersect(topPipeRect) || spriteRect.intersect(bottomPipeRect)) {
+                if (spriteRect.intersect(topPipeRect) || spriteRect.intersect(bottomPipeRect) || bird.getY() > getHeight()) {
                     bird.setStatus(false);
                     ai = false;
                 }
