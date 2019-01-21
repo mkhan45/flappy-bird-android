@@ -41,7 +41,7 @@ public class gameView extends SurfaceView {
     private RectF topPipeRect = new RectF();
     private RectF bottomPipeRect = new RectF();
     private boolean spriteScaled = false;
-    private boolean inRange;
+    private boolean paused;
 
     public gameView(final Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -90,26 +90,29 @@ public class gameView extends SurfaceView {
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                try {
-                                    if (!spriteScaled){
-                                        sprite = Bitmap.createScaledBitmap(sprite,(int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
-                                        bottomPipe = Bitmap.createScaledBitmap(bottomPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
-                                        topPipe = Bitmap.createScaledBitmap(topPipe, (int)(Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
-                                        spriteScaled = true;
-                                    }
-                                    if(millis % 120 == 0 && millis >= 80) {
-                                        if (pipes == null)
-                                            pipes = new pipePair(getHeight(), getWidth());
-                                        else
-                                            pipes.reset();
-                                        if(bird.isAlive()) {
-                                            score++;
+                                if (!paused) {
+                                    try {
+                                        if (!spriteScaled) {
+                                            sprite = Bitmap.createScaledBitmap(sprite, (int) (Math.floor(getWidth() * .15)), (int) (Math.floor(getHeight() * .08)), false); //getWidth and getHeight aren't initialized until later
+                                            bottomPipe = Bitmap.createScaledBitmap(bottomPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
+                                            topPipe = Bitmap.createScaledBitmap(topPipe, (int) (Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
+                                            spriteScaled = true;
                                         }
-                                    }
+                                        if (millis % 120 == 0 && millis >= 80) {
+                                            if (pipes == null)
+                                                pipes = new pipePair(getHeight(), getWidth());
+                                            else
+                                                pipes.reset();
+                                            if (bird.isAlive()) {
+                                                score++;
+                                            }
+                                        }
 
-                                    update.run();
-                                }catch (Exception e){}
-                                millis++;
+                                        update.run();
+                                    } catch (Exception e) {
+                                    }
+                                    millis++;
+                                }
                             }
                         }, 0, 16);
                     }
@@ -187,6 +190,10 @@ public class gameView extends SurfaceView {
             }catch (Exception e){}
         }
     };
+
+    public void togglePause(){
+        paused = !paused;
+    }
 
 
 }
