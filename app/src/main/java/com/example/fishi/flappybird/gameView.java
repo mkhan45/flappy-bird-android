@@ -1,6 +1,7 @@
 package com.example.fishi.flappybird;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,18 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewParent;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,6 +56,8 @@ public class gameView extends SurfaceView {
     private boolean spriteScaled = false;
     private boolean paused;
     private boolean ai = false;
+    private boolean responded = false;
+    String numberFact = "";
 
     public gameView(final Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -169,7 +184,12 @@ public class gameView extends SurfaceView {
                 canvas.drawBitmap(bottomPipe, pipes.getX(), pipes.getBottomY(), bitmapPaint);
                 canvas.drawBitmap(topPipe, pipes.getX(), pipes.getTopY(), bitmapPaint);
                 canvas.drawBitmap(sprite, bird.getX(), bird.getY(), bitmapPaint);
-                canvas.drawText("Score: " + score, 200, 200, textPaint);
+                if (!responded)
+                    canvas.drawText("Score: " + score, 200, 200, textPaint);
+                else {
+                    canvas.drawText("Score: " + score, 5, 200, textPaint);
+                    canvas.drawText(numberFact, 5, 300, textPaint);
+                }
                 holder.unlockCanvasAndPost(canvas);
 
 
@@ -186,7 +206,7 @@ public class gameView extends SurfaceView {
                         dy -= 25;
                         Log.i("Jumping", "too low");
                     }
-                    else if (bottomYDist <= 50 && topYDist > 0 && dy >= 0) {
+                    else if (bottomYDist <= 60 && topYDist > 0 && dy >= 0) {
                         dy -= 25;
                         Log.i("Jumping", "avoid pipe");
                     }
@@ -196,6 +216,9 @@ public class gameView extends SurfaceView {
                 if (spriteRect.intersect(topPipeRect) || spriteRect.intersect(bottomPipeRect) || bird.getY() > getHeight()) {
                     bird.setStatus(false);
                     ai = false;
+                    if (!responded)
+                        numberStuff(score);
+                    Log.i("Score", "" + score);
                 }
 
 
@@ -211,6 +234,27 @@ public class gameView extends SurfaceView {
 
     public void ai() {
         ai = true;
+    }
+
+    public void numberStuff(int i){
+        String url = "http://numbersapi.com/" + score;
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Response", response);
+                responded = true;
+                textPaint.setTextSize(50);
+                numberFact = response;
+            }
+        }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error){
+                Log.i("Error", error.toString());
+            }
+        });
+
+        queue.add(request);
     }
 
 
