@@ -185,7 +185,7 @@ public class gameView extends SurfaceView {
                 canvas.drawBitmap(topPipe, pipes.getX(), pipes.getTopY(), bitmapPaint);
                 canvas.drawBitmap(sprite, bird.getX(), bird.getY(), bitmapPaint);
                 if (!responded)
-                    canvas.drawText("Score: " + score, 200, 200, textPaint);
+                    canvas.drawText("Score: " + score, 5, 200, textPaint);
                 else {
                     canvas.drawText("Score: " + score, 5, 200, textPaint);
                     canvas.drawText(numberFact, 5, 300, textPaint);
