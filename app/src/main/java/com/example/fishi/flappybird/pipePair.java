@@ -11,12 +11,12 @@ public class pipePair {
     private double dx;
 
     public pipePair(int screenHeight, int screenWidth){
-        dist = (int) (screenHeight/1.15);
+        dist = (int) (screenHeight/1.1);
         bottomY = (int) Math.floor(Math.random() * (screenHeight/2) + .3 * screenHeight);
         topY = bottomY - dist;
 
         x = screenWidth;
-        dx = .0125 * screenWidth;
+        dx = .014 * screenWidth;
         height = screenHeight;
         width = screenWidth;
     }
@@ -40,7 +40,6 @@ public class pipePair {
 
     public void reset(){
         x = width;
-        dist = (int) (height/1.15);
         bottomY = (int) Math.floor(Math.random() * (height/2) + .3 * height);
         topY = bottomY - dist;
     }

@@ -97,7 +97,7 @@ public class gameView extends SurfaceView {
                                         topPipe = Bitmap.createScaledBitmap(topPipe, (int)(Math.floor(getWidth() * .3)), (int) (Math.floor(getHeight() * .67)), false);
                                         spriteScaled = true;
                                     }
-                                    if(millis % 80 == 0 && millis >= 100) {
+                                    if(millis % 120 == 0 && millis >= 80) {
                                         if (pipes == null)
                                             pipes = new pipePair(getHeight(), getWidth());
                                         else
@@ -157,10 +157,9 @@ public class gameView extends SurfaceView {
         @Override
         public void run() {
             try {
-                if(millis >= 165 && millis % 2 == 0)
+                if(millis >= 130 && millis % 2 == 0)
                    dy += 3;
                 bird.update(dy);
-                pipes.moveX();
                 pipes.moveX();
 
 
