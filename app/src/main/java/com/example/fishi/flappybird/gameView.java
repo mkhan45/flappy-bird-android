@@ -13,6 +13,9 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.app.FragmentActivity;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -188,7 +191,10 @@ public class gameView extends SurfaceView {
                     canvas.drawText("Score: " + score, 5, 200, textPaint);
                 else {
                     canvas.drawText("Score: " + score, 5, 200, textPaint);
-                    canvas.drawText(numberFact, 5, 300, textPaint);
+                    TextPaint tp = new TextPaint();
+                    tp.setTextSize(50);
+                    StaticLayout sl = new StaticLayout(numberFact, tp, getWidth(), Layout.Alignment.ALIGN_LEFT, 1, 0, false);
+                    sl.draw(canvas);
                 }
                 holder.unlockCanvasAndPost(canvas);
 
